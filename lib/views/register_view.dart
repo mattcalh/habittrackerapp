@@ -5,30 +5,32 @@ import 'package:habittrackerapp/components/square_tile.dart';
 import '../components/login_textfield.dart';
 import '../constants/color_palette.dart';
 
-class LoginView extends StatefulWidget {
+class RegisterView extends StatefulWidget {
   final Function()? onTap;
 
-  const LoginView({
+  const RegisterView({
     super.key,
     required this.onTap,
   });
 
   @override
-  State<LoginView> createState() => _LoginViewState();
+  State<RegisterView> createState() => _RegisterViewState();
 }
 
-class _LoginViewState extends State<LoginView> {
+class _RegisterViewState extends State<RegisterView> {
+  late final TextEditingController _confirmPasswordController;
   late final TextEditingController _passwordController;
   late final TextEditingController _emailController;
 
   @override
   void initState() {
+    _confirmPasswordController = TextEditingController();
     _passwordController = TextEditingController();
     _emailController = TextEditingController();
     super.initState();
   }
 
-  void signUserIn() async {
+  void signUserUp() async {
     showDialog(
       context: context,
       builder: (context) {
@@ -39,23 +41,19 @@ class _LoginViewState extends State<LoginView> {
     );
 
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: _emailController.text,
-        password: _passwordController.text,
-      );
+      if (_passwordController.text == _confirmPasswordController.text) {
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: _emailController.text,
+          password: _passwordController.text,
+        );
+      } else {
+        print("Password don't match");
+      }
+      Navigator.pop(context);
     } on FirebaseAuthException catch (e) {
-      // Wrong Email
-      if (e.code == 'user-not-found') {
-        print('no user found for that email');
-      }
-      // WRONG Password
-      else if (e.code == 'wrong-password') {
-        print('Wrong password');
-      }
+      Navigator.pop(context);
+      print(e.code);
     }
-
-    // Delete loading sign
-    Navigator.pop(context);
   }
 
   @override
@@ -78,9 +76,9 @@ class _LoginViewState extends State<LoginView> {
                   size: 100,
                 ),
 
-                // Welcome Text for login page
+                // Text for register page
                 const Text(
-                  'Welcome Back to ABC',
+                  'CREATE YOUR ACCOUNT',
                   style: TextStyle(
                     color: primaryColor,
                     fontSize: 20,
@@ -92,7 +90,7 @@ class _LoginViewState extends State<LoginView> {
                   height: 25,
                 ),
 
-                // Password Textfiel
+                //  email TextField
                 LoginField(
                   controller: _emailController,
                   hintText: 'Email',
@@ -103,7 +101,7 @@ class _LoginViewState extends State<LoginView> {
                   height: 15,
                 ),
 
-                // Password Textfiel
+                // Password Textfield
                 LoginField(
                   controller: _passwordController,
                   hintText: 'Password',
@@ -111,23 +109,14 @@ class _LoginViewState extends State<LoginView> {
                 ),
 
                 const SizedBox(
-                  height: 10,
+                  height: 15,
                 ),
 
-                // Forgot Password message
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: const [
-                      Text(
-                        'Forgot password?',
-                        style: TextStyle(
-                          color: primaryColor,
-                        ),
-                      ),
-                    ],
-                  ),
+                // Confirm Password Textfield
+                LoginField(
+                  controller: _confirmPasswordController,
+                  hintText: 'Confirm Password',
+                  obscureText: true,
                 ),
 
                 const SizedBox(
@@ -136,8 +125,8 @@ class _LoginViewState extends State<LoginView> {
 
                 // Sign In Button
                 LoginButton(
-                  onTap: signUserIn,
-                  textForButton: 'Sign In',
+                  onTap: signUserUp,
+                  textForButton: 'Sign Up',
                 ),
 
                 const SizedBox(
@@ -208,14 +197,14 @@ class _LoginViewState extends State<LoginView> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text(
-                      'Not a member?',
+                      'Already have an account?',
                       style: TextStyle(color: primaryColor),
                     ),
                     const SizedBox(width: 4),
                     GestureDetector(
                       onTap: widget.onTap,
                       child: const Text(
-                        'Register Now',
+                        'Login Now',
                         style: TextStyle(
                           color: primaryColor,
                           fontWeight: FontWeight.bold,

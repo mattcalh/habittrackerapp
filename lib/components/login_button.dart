@@ -3,10 +3,12 @@ import 'package:habittrackerapp/constants/color_palette.dart';
 
 class LoginButton extends StatelessWidget {
   final Function()? onTap;
+  final String textForButton;
 
   const LoginButton({
     super.key,
     required this.onTap,
+    required this.textForButton,
   });
 
   @override
@@ -20,10 +22,10 @@ class LoginButton extends StatelessWidget {
           color: secondaryColor,
           borderRadius: BorderRadius.circular(8),
         ),
-        child: const Center(
+        child: Center(
           child: Text(
-            'Sign In',
-            style: TextStyle(
+            textForButton,
+            style: const TextStyle(
                 color: primaryColor, fontWeight: FontWeight.bold, fontSize: 16),
           ),
         ),
