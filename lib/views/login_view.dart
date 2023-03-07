@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:habittrackerapp/components/login_button.dart';
 import 'package:habittrackerapp/components/square_tile.dart';
@@ -24,7 +25,35 @@ class _LoginViewState extends State<LoginView> {
     super.initState();
   }
 
-  void signUserIn() {}
+  void signUserIn() async {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
+
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+    } on FirebaseAuthException catch (e) {
+      // Wrong Email
+      if (e.code == 'user-not-found') {
+        print('no user found for that email');
+      }
+      // WRONG Password
+      else if (e.code == 'wrong-password') {
+        print('Wrong password');
+      }
+    }
+
+    // Delete loading sign
+    Navigator.pop(context);
+  }
 
   @override
   Widget build(BuildContext context) {
