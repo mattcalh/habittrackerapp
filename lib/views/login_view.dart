@@ -164,7 +164,14 @@ class _LoginViewState extends State<LoginView> {
                   ),
 
                   // apple logo
-                  SquareTile(imagePath: 'lib/images/apple-logo.png')
+                  SquareTile(imagePath: 'lib/images/apple-logo.png'),
+
+                  SizedBox(
+                    width: 25,
+                  ),
+
+                  // apple logo
+                  SquareTile(imagePath: 'lib/images/facebook-logo.png'),
                 ],
               ),
 
