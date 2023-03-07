@@ -1,17 +1,15 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:habittrackerapp/components/login_button.dart';
 import 'package:habittrackerapp/components/square_tile.dart';
 import '../components/login_textfield.dart';
 import '../constants/color_palette.dart';
+import '../constants/routes.dart';
+import '../services/auth/auth_exceptions.dart';
+import '../services/auth/auth_service.dart';
+
+import '../utilities/show_error_snackbar.dart';
 
 class LoginView extends StatefulWidget {
-  final Function()? onTap;
-
-  const LoginView({
-    super.key,
-    required this.onTap,
-  });
+  const LoginView({super.key});
 
   @override
   State<LoginView> createState() => _LoginViewState();
@@ -26,36 +24,6 @@ class _LoginViewState extends State<LoginView> {
     _passwordController = TextEditingController();
     _emailController = TextEditingController();
     super.initState();
-  }
-
-  void signUserIn() async {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
-      },
-    );
-
-    try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: _emailController.text,
-        password: _passwordController.text,
-      );
-    } on FirebaseAuthException catch (e) {
-      // Wrong Email
-      if (e.code == 'user-not-found') {
-        print('no user found for that email');
-      }
-      // WRONG Password
-      else if (e.code == 'wrong-password') {
-        print('Wrong password');
-      }
-    }
-
-    // Delete loading sign
-    Navigator.pop(context);
   }
 
   @override
@@ -135,9 +103,57 @@ class _LoginViewState extends State<LoginView> {
                 ),
 
                 // Sign In Button
-                LoginButton(
-                  onTap: signUserIn,
-                  textForButton: 'Sign In',
+                TextButton(
+                  onPressed: () async {
+                    final email = _emailController.text;
+                    final password = _passwordController.text;
+                    try {
+                      await AuthService.firebase().logIn(
+                        email: email,
+                        password: password,
+                      );
+                      final user = AuthService.firebase().currentUser;
+                      if (user?.isEmailVerified ?? false) {
+                        Navigator.of(context).pushNamedAndRemoveUntil(
+                          mainRoute,
+                          (route) => false,
+                        );
+                      } else {
+                        Navigator.of(context).pushNamedAndRemoveUntil(
+                          verifyEmailRoute,
+                          (route) => false,
+                        );
+                      }
+                    } on UserNotFoundAuthException {
+                      await showErrorSnackbar(
+                        context,
+                        'User not found',
+                      );
+                    } on WrongPasswordAuthException {
+                      await showErrorSnackbar(
+                        context,
+                        'Wrong credentials',
+                      );
+                    } on GenericAuthException {
+                      await showErrorSnackbar(
+                        context,
+                        'Authentification error',
+                      );
+                    }
+                  },
+                  style: TextButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 25, horizontal: 100),
+                      foregroundColor: backgroundColor,
+                      backgroundColor: primaryColor,
+                      shape: const StadiumBorder()),
+                  child: const Text(
+                    'Login',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
                 ),
 
                 const SizedBox(
@@ -212,8 +228,13 @@ class _LoginViewState extends State<LoginView> {
                       style: TextStyle(color: primaryColor),
                     ),
                     const SizedBox(width: 4),
-                    GestureDetector(
-                      onTap: widget.onTap,
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pushNamedAndRemoveUntil(
+                          registerRoute,
+                          (route) => false,
+                        );
+                      },
                       child: const Text(
                         'Register Now',
                         style: TextStyle(

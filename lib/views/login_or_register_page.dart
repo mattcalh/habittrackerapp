@@ -21,13 +21,9 @@ class _LoginOrRegisterPageState extends State<LoginOrRegisterPage> {
   @override
   Widget build(BuildContext context) {
     if (showLoginPage) {
-      return LoginView(
-        onTap: togglePages,
-      );
+      return const LoginView();
     } else {
-      return RegisterView(
-        onTap: togglePages,
-      );
+      return const RegisterView();
     }
   }
 }

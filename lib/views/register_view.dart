@@ -1,16 +1,15 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:habittrackerapp/components/login_button.dart';
 import 'package:habittrackerapp/components/square_tile.dart';
+import 'package:habittrackerapp/constants/routes.dart';
+import 'package:habittrackerapp/utilities/show_error_snackbar.dart';
 import '../components/login_textfield.dart';
 import '../constants/color_palette.dart';
+import '../services/auth/auth_exceptions.dart';
+import '../services/auth/auth_service.dart';
 
 class RegisterView extends StatefulWidget {
-  final Function()? onTap;
-
   const RegisterView({
     super.key,
-    required this.onTap,
   });
 
   @override
@@ -28,32 +27,6 @@ class _RegisterViewState extends State<RegisterView> {
     _passwordController = TextEditingController();
     _emailController = TextEditingController();
     super.initState();
-  }
-
-  void signUserUp() async {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
-      },
-    );
-
-    try {
-      if (_passwordController.text == _confirmPasswordController.text) {
-        await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: _emailController.text,
-          password: _passwordController.text,
-        );
-      } else {
-        print("Password don't match");
-      }
-      Navigator.pop(context);
-    } on FirebaseAuthException catch (e) {
-      Navigator.pop(context);
-      print(e.code);
-    }
   }
 
   @override
@@ -124,9 +97,60 @@ class _RegisterViewState extends State<RegisterView> {
                 ),
 
                 // Sign In Button
-                LoginButton(
-                  onTap: signUserUp,
-                  textForButton: 'Sign Up',
+                TextButton(
+                  onPressed: () async {
+                    final email = _emailController.text;
+                    final password = _passwordController.text;
+                    final confirmPassword = _confirmPasswordController.text;
+                    try {
+                      if (password == confirmPassword) {
+                        await AuthService.firebase().createUser(
+                          email: email,
+                          password: password,
+                        );
+                        AuthService.firebase().sendEmailVerification();
+                        Navigator.of(context).pushNamed(verifyEmailRoute);
+                      } else {
+                        await showErrorSnackbar(
+                          context,
+                          'Passwords are not the same',
+                        );
+                      }
+                    } on WeakPasswordAuthException {
+                      await showErrorSnackbar(
+                        context,
+                        'Weak password',
+                      );
+                    } on EmailAlreadyInUseAuthException {
+                      await showErrorSnackbar(
+                        context,
+                        'Email already in use',
+                      );
+                    } on InvalidEmailAuthException {
+                      await showErrorSnackbar(
+                        context,
+                        'Invalid email',
+                      );
+                    } on GenericAuthException {
+                      await showErrorSnackbar(
+                        context,
+                        'Failed to register',
+                      );
+                    }
+                  },
+                  style: TextButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 25, horizontal: 100),
+                      foregroundColor: backgroundColor,
+                      backgroundColor: primaryColor,
+                      shape: const StadiumBorder()),
+                  child: const Text(
+                    'Register',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
                 ),
 
                 const SizedBox(
@@ -201,8 +225,13 @@ class _RegisterViewState extends State<RegisterView> {
                       style: TextStyle(color: primaryColor),
                     ),
                     const SizedBox(width: 4),
-                    GestureDetector(
-                      onTap: widget.onTap,
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pushNamedAndRemoveUntil(
+                          loginRoute,
+                          (route) => false,
+                        );
+                      },
                       child: const Text(
                         'Login Now',
                         style: TextStyle(

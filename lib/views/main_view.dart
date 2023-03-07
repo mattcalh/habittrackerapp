@@ -1,14 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:habittrackerapp/services/auth/auth_service.dart';
 
-class HomePage extends StatelessWidget {
-  HomePage({super.key});
+import '../constants/routes.dart';
+
+class MainView extends StatelessWidget {
+  MainView({super.key});
 
   final user = FirebaseAuth.instance.currentUser!;
-
-  void signUserOut() {
-    FirebaseAuth.instance.signOut();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +15,13 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         actions: [
           IconButton(
-            onPressed: signUserOut,
+            onPressed: () async {
+              await AuthService.firebase().logOut();
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                registerRoute,
+                (route) => false,
+              );
+            },
             icon: const Icon(Icons.logout),
           )
         ],
