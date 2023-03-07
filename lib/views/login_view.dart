@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:habittrackerapp/components/square_tile.dart';
+import 'package:habittrackerapp/services/auth/auth_third_parties.dart';
 import '../components/login_textfield.dart';
 import '../constants/color_palette.dart';
 import '../constants/routes.dart';
@@ -195,23 +196,32 @@ class _LoginViewState extends State<LoginView> {
                 // Other ways to register/log-in
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
+                  children: [
                     // google button
-                    SquareTile(imagePath: 'lib/images/google-logo.png'),
+                    SquareTile(
+                      onTap: () => ThirdParties().signInWihtGoogle(),
+                      imagePath: 'lib/images/google-logo.png',
+                    ),
 
-                    SizedBox(
+                    const SizedBox(
                       width: 25,
                     ),
 
                     // apple logo
-                    SquareTile(imagePath: 'lib/images/apple-logo.png'),
+                    SquareTile(
+                      onTap: () {},
+                      imagePath: 'lib/images/apple-logo.png',
+                    ),
 
-                    SizedBox(
+                    const SizedBox(
                       width: 25,
                     ),
 
                     // apple logo
-                    SquareTile(imagePath: 'lib/images/facebook-logo.png'),
+                    SquareTile(
+                      onTap: () {},
+                      imagePath: 'lib/images/facebook-logo.png',
+                    ),
                   ],
                 ),
 
