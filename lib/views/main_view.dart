@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:habittrackerapp/components/month_summary.dart';
 import 'package:habittrackerapp/constants/color_palette.dart';
 import 'package:habittrackerapp/data/habit_database.dart';
 import 'package:habittrackerapp/services/auth/auth_service.dart';
@@ -117,38 +118,50 @@ class _MainViewState extends State<MainView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: backgroundColor,
-      floatingActionButton: MyFloatingActionButton(
-        onPressed: createNewHabit,
-      ),
-      appBar: AppBar(
-        backgroundColor: primaryColor,
-        actions: [
-          IconButton(
-            onPressed: () async {
-              await AuthService.firebase().logOut();
-              // ignore: use_build_context_synchronously
-              Navigator.of(context).pushNamedAndRemoveUntil(
-                registerRoute,
-                (route) => false,
-              );
-            },
-            icon: const Icon(Icons.logout),
-          )
-        ],
-      ),
-      body: ListView.builder(
-        itemCount: db.todayHabitList.length,
-        itemBuilder: (context, index) {
-          return HabitTile(
-            habitName: db.todayHabitList[index][0],
-            habitCompleted: db.todayHabitList[index][1],
-            onChanged: (value) => checkBoxTapped(value, index),
-            settingsTapped: (context) => openHabitSettings(index),
-            deleteTapped: (context) => deleteHabit(index),
-          );
-        },
-      ),
-    );
+        backgroundColor: backgroundColor,
+        floatingActionButton: MyFloatingActionButton(
+          onPressed: createNewHabit,
+        ),
+        appBar: AppBar(
+          backgroundColor: primaryColor,
+          actions: [
+            IconButton(
+              onPressed: () async {
+                await AuthService.firebase().logOut();
+                // ignore: use_build_context_synchronously
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                  registerRoute,
+                  (route) => false,
+                );
+              },
+              icon: const Icon(Icons.logout),
+            )
+          ],
+        ),
+        body: ListView(
+          children: [
+            // Heat map of monthly summary
+            MonthlySummary(
+              datasets: db.heatMapDataSet,
+              startDate: _myBox.get("START_DATE"),
+            ),
+
+            // List of the habits
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: db.todayHabitList.length,
+              itemBuilder: (context, index) {
+                return HabitTile(
+                  habitName: db.todayHabitList[index][0],
+                  habitCompleted: db.todayHabitList[index][1],
+                  onChanged: (value) => checkBoxTapped(value, index),
+                  settingsTapped: (context) => openHabitSettings(index),
+                  deleteTapped: (context) => deleteHabit(index),
+                );
+              },
+            ),
+          ],
+        ));
   }
 }
