@@ -17,7 +17,7 @@ void main() async {
 
   // Initialize Hive
   await Hive.initFlutter();
-  await Hive.openBox("Habite_Database");
+  await Hive.openBox("Habit_Database");
 
   runApp(
     MaterialApp(

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:habittrackerapp/constants/color_palette.dart';
+import 'package:habittrackerapp/data/habit_database.dart';
 import 'package:habittrackerapp/services/auth/auth_service.dart';
-
+import 'package:hive_flutter/hive_flutter.dart';
 import '../components/habit_tile.dart';
 import '../components/my_floating_button.dart';
 import '../components/new_habit_box.dart';
@@ -15,20 +16,36 @@ class MainView extends StatefulWidget {
 }
 
 class _MainViewState extends State<MainView> {
-  // List of habits created
-  List todayHabitList = [
-    ['Meditation', false],
-    ['Workout', false],
-    ['Walk', false],
-  ];
+  HabitDatabase db = HabitDatabase();
+  final _myBox = Hive.box("Habit_Database");
+
+  @override
+  void initState() {
+    // If no data, this is the 1st time the app is opening
+    // then create default data
+    if (_myBox.get("CURRENT_HABIT_LIST") == null) {
+      db.createDefaultData();
+    }
+
+    // If there is already data, then load data
+    else {
+      db.loadData();
+    }
+
+    // Update the Database
+    db.updateDatabase();
+
+    super.initState();
+  }
 
   // Checkbox is tapped
   void checkBoxTapped(bool? value, int index) {
     setState(
       () {
-        todayHabitList[index][1] = value;
+        db.todayHabitList[index][1] = value;
       },
     );
+    db.updateDatabase();
   }
 
   final _newHabitNameController = TextEditingController();
@@ -51,10 +68,11 @@ class _MainViewState extends State<MainView> {
   // Svae the new habit
   void saveNewHabit() {
     setState(() {
-      todayHabitList.add([_newHabitNameController.text, false]);
+      db.todayHabitList.add([_newHabitNameController.text, false]);
     });
     _newHabitNameController.clear();
     Navigator.of(context).pop();
+    db.updateDatabase();
   }
 
   // Cancel the action of editing/creating the habit
@@ -70,7 +88,7 @@ class _MainViewState extends State<MainView> {
       builder: (context) {
         return CreateNewHabitBox(
           controller: _newHabitNameController,
-          hintText: todayHabitList[index][0],
+          hintText: db.todayHabitList[index][0],
           onSave: () => saveExistingHabit(index),
           onCancel: cancelDialogBox,
         );
@@ -81,17 +99,19 @@ class _MainViewState extends State<MainView> {
   // Save the new name for an existing habit
   void saveExistingHabit(int index) {
     setState(() {
-      todayHabitList[index][0] = _newHabitNameController.text;
+      db.todayHabitList[index][0] = _newHabitNameController.text;
       _newHabitNameController.clear();
       Navigator.of(context).pop();
     });
+    db.updateDatabase();
   }
 
   // Delete an existing habit
   void deleteHabit(int index) {
     setState(() {
-      todayHabitList.removeAt(index);
+      db.todayHabitList.removeAt(index);
     });
+    db.updateDatabase();
   }
 
   @override
@@ -118,11 +138,11 @@ class _MainViewState extends State<MainView> {
         ],
       ),
       body: ListView.builder(
-        itemCount: todayHabitList.length,
+        itemCount: db.todayHabitList.length,
         itemBuilder: (context, index) {
           return HabitTile(
-            habitName: todayHabitList[index][0],
-            habitCompleted: todayHabitList[index][1],
+            habitName: db.todayHabitList[index][0],
+            habitCompleted: db.todayHabitList[index][1],
             onChanged: (value) => checkBoxTapped(value, index),
             settingsTapped: (context) => openHabitSettings(index),
             deleteTapped: (context) => deleteHabit(index),
