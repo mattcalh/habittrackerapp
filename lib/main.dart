@@ -5,6 +5,7 @@ import 'package:habittrackerapp/views/main_view.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:habittrackerapp/views/register_view.dart';
 import 'package:habittrackerapp/views/verify_email_view.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'constants/routes.dart';
 import 'firebase_options.dart';
 
@@ -13,6 +14,11 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  // Initialize Hive
+  await Hive.initFlutter();
+  await Hive.openBox("Habite_Database");
+
   runApp(
     MaterialApp(
       debugShowCheckedModeBanner: false,
