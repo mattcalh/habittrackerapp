@@ -17,15 +17,48 @@ class CreateNewHabitBox extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       backgroundColor: backgroundColor,
-      content: TextField(
-        controller: controller,
-        style: const TextStyle(color: Color.fromARGB(255, 110, 3, 3)),
-        decoration: const InputDecoration(
-          enabledBorder:
-              OutlineInputBorder(borderSide: BorderSide(color: primaryColor)),
-          focusedBorder:
-              OutlineInputBorder(borderSide: BorderSide(color: primaryColor)),
-        ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(
+            Icons.format_list_bulleted_add,
+            size: 36,
+          ),
+
+          const SizedBox(
+            height: 10,
+          ),
+
+          // Title of the box
+          const Text(
+            "Create a new habit",
+            style: TextStyle(
+              color: primaryColor,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+
+          const SizedBox(
+            height: 10,
+          ),
+
+          // Texfield for the name of your habit
+          TextField(
+            controller: controller,
+            style: const TextStyle(color: Color.fromARGB(255, 110, 3, 3)),
+            decoration: const InputDecoration(
+              enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: primaryColor)),
+              focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: primaryColor)),
+              fillColor: textFieldBackgroundColor,
+              filled: true,
+              hintText: 'Write the name of your next habit',
+              hintStyle: TextStyle(color: hintTextFieldColor),
+            ),
+          ),
+        ],
       ),
       actions: [
         MaterialButton(

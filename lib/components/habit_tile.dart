@@ -20,7 +20,7 @@ class HabitTile extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
-          color: secondaryColor,
+          color: textFieldBackgroundColor,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Row(
@@ -29,7 +29,7 @@ class HabitTile extends StatelessWidget {
             Text(
               habitName,
               style: const TextStyle(
-                  color: backgroundColor, fontWeight: FontWeight.bold),
+                  color: primaryColor, fontWeight: FontWeight.bold),
             ),
           ],
         ),
