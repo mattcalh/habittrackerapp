@@ -33,19 +33,22 @@ class _MainViewState extends State<MainView> {
 
   final _newHabitNameController = TextEditingController();
 
+  // Create a new habit
   void createNewHabit() {
     showDialog(
       context: context,
       builder: (context) {
         return CreateNewHabitBox(
           controller: _newHabitNameController,
+          hintText: "Add new habit",
           onSave: saveNewHabit,
-          onCancel: cancelNewHabit,
+          onCancel: cancelDialogBox,
         );
       },
     );
   }
 
+  // Svae the new habit
   void saveNewHabit() {
     setState(() {
       todayHabitList.add([_newHabitNameController.text, false]);
@@ -54,9 +57,41 @@ class _MainViewState extends State<MainView> {
     Navigator.of(context).pop();
   }
 
-  void cancelNewHabit() {
+  // Cancel the action of editing/creating the habit
+  void cancelDialogBox() {
     _newHabitNameController.clear();
     Navigator.of(context).pop();
+  }
+
+  // Modifiy an exiting habit
+  void openHabitSettings(int index) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return CreateNewHabitBox(
+          controller: _newHabitNameController,
+          hintText: todayHabitList[index][0],
+          onSave: () => saveExistingHabit(index),
+          onCancel: cancelDialogBox,
+        );
+      },
+    );
+  }
+
+  // Save the new name for an existing habit
+  void saveExistingHabit(int index) {
+    setState(() {
+      todayHabitList[index][0] = _newHabitNameController.text;
+      _newHabitNameController.clear();
+      Navigator.of(context).pop();
+    });
+  }
+
+  // Delete an existing habit
+  void deleteHabit(int index) {
+    setState(() {
+      todayHabitList.removeAt(index);
+    });
   }
 
   @override
@@ -89,6 +124,8 @@ class _MainViewState extends State<MainView> {
             habitName: todayHabitList[index][0],
             habitCompleted: todayHabitList[index][1],
             onChanged: (value) => checkBoxTapped(value, index),
+            settingsTapped: (context) => openHabitSettings(index),
+            deleteTapped: (context) => deleteHabit(index),
           );
         },
       ),

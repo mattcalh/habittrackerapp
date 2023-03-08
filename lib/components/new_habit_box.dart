@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:habittrackerapp/constants/color_palette.dart';
 
 class CreateNewHabitBox extends StatelessWidget {
-  final controller;
+  final TextEditingController controller;
+  final String hintText;
   final VoidCallback onSave;
   final VoidCallback onCancel;
 
   const CreateNewHabitBox({
     super.key,
     required this.controller,
+    required this.hintText,
     required this.onSave,
     required this.onCancel,
   });
@@ -47,15 +49,15 @@ class CreateNewHabitBox extends StatelessWidget {
           TextField(
             controller: controller,
             style: const TextStyle(color: Color.fromARGB(255, 110, 3, 3)),
-            decoration: const InputDecoration(
-              enabledBorder: OutlineInputBorder(
+            decoration: InputDecoration(
+              enabledBorder: const OutlineInputBorder(
                   borderSide: BorderSide(color: primaryColor)),
-              focusedBorder: OutlineInputBorder(
+              focusedBorder: const OutlineInputBorder(
                   borderSide: BorderSide(color: primaryColor)),
               fillColor: textFieldBackgroundColor,
               filled: true,
-              hintText: 'Write the name of your next habit',
-              hintStyle: TextStyle(color: hintTextFieldColor),
+              hintText: hintText,
+              hintStyle: const TextStyle(color: hintTextFieldColor),
             ),
           ),
         ],
