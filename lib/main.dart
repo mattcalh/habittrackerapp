@@ -20,9 +20,10 @@ void main() async {
       routes: {
         loginRoute: (context) => const LoginView(),
         registerRoute: (context) => const RegisterView(),
-        mainRoute: (context) => MainView(),
+        mainRoute: (context) => const MainView(),
         verifyEmailRoute: (context) => const VerifyEmailView(),
       },
+      theme: ThemeData(primarySwatch: Colors.red),
     ),
   );
 }

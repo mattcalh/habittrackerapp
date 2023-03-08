@@ -26,9 +26,9 @@ class HabitTile extends StatelessWidget {
         child: Row(
           children: [
             Checkbox(value: habitCompleted, onChanged: onChanged),
-            const Text(
-              'Meditation',
-              style: TextStyle(
+            Text(
+              habitName,
+              style: const TextStyle(
                   color: backgroundColor, fontWeight: FontWeight.bold),
             ),
           ],
