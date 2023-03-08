@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../constants/color_palette.dart';
 
 class HabitTile extends StatelessWidget {
@@ -26,7 +25,7 @@ class HabitTile extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Checkbox(value: false, onChanged: onChanged),
+            Checkbox(value: habitCompleted, onChanged: onChanged),
             const Text(
               'Meditation',
               style: TextStyle(
