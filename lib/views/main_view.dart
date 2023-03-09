@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:habittrackerapp/components/month_summary.dart';
 import 'package:habittrackerapp/constants/color_palette.dart';
@@ -129,7 +131,6 @@ class _MainViewState extends State<MainView> {
           IconButton(
             onPressed: () async {
               await AuthService.firebase().logOut();
-              // ignore: use_build_context_synchronously
               Navigator.of(context).pushNamedAndRemoveUntil(
                 registerRoute,
                 (route) => false,
@@ -206,7 +207,12 @@ class _MainViewState extends State<MainView> {
                     children: [
                       // Settings button
                       IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.of(context).pushNamedAndRemoveUntil(
+                            settingsRoute,
+                            (route) => false,
+                          );
+                        },
                         icon: const Icon(
                           Icons.settings,
                           size: 30,
@@ -216,7 +222,12 @@ class _MainViewState extends State<MainView> {
 
                       // Profile button
                       IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.of(context).pushNamedAndRemoveUntil(
+                            profileRoute,
+                            (route) => false,
+                          );
+                        },
                         icon: const Icon(
                           Icons.person,
                           size: 30,
