@@ -118,50 +118,118 @@ class _MainViewState extends State<MainView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: backgroundColor,
-        floatingActionButton: MyFloatingActionButton(
-          onPressed: createNewHabit,
-        ),
-        appBar: AppBar(
-          backgroundColor: primaryColor,
-          actions: [
-            IconButton(
-              onPressed: () async {
-                await AuthService.firebase().logOut();
-                // ignore: use_build_context_synchronously
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                  registerRoute,
-                  (route) => false,
-                );
-              },
-              icon: const Icon(Icons.logout),
-            )
-          ],
-        ),
-        body: ListView(
-          children: [
-            // Heat map of monthly summary
-            MonthlySummary(
-              datasets: db.heatMapDataSet,
-              startDate: _myBox.get("START_DATE"),
-            ),
+      backgroundColor: backgroundColor,
+      floatingActionButton: MyFloatingActionButton(
+        onPressed: createNewHabit,
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      appBar: AppBar(
+        backgroundColor: primaryColor,
+        actions: [
+          IconButton(
+            onPressed: () async {
+              await AuthService.firebase().logOut();
+              // ignore: use_build_context_synchronously
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                registerRoute,
+                (route) => false,
+              );
+            },
+            icon: const Icon(Icons.logout),
+          )
+        ],
+      ),
+      body: ListView(
+        children: [
+          // Heat map of monthly summary
+          MonthlySummary(
+            datasets: db.heatMapDataSet,
+            startDate: _myBox.get("START_DATE"),
+          ),
 
-            // List of the habits
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: db.todayHabitList.length,
-              itemBuilder: (context, index) {
-                return HabitTile(
-                  habitName: db.todayHabitList[index][0],
-                  habitCompleted: db.todayHabitList[index][1],
-                  onChanged: (value) => checkBoxTapped(value, index),
-                  settingsTapped: (context) => openHabitSettings(index),
-                  deleteTapped: (context) => deleteHabit(index),
-                );
-              },
+          // List of the habits
+          ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: db.todayHabitList.length,
+            itemBuilder: (context, index) {
+              return HabitTile(
+                habitName: db.todayHabitList[index][0],
+                habitCompleted: db.todayHabitList[index][1],
+                onChanged: (value) => checkBoxTapped(value, index),
+                settingsTapped: (context) => openHabitSettings(index),
+                deleteTapped: (context) => deleteHabit(index),
+              );
+            },
+          ),
+        ],
+      ),
+      bottomNavigationBar: BottomAppBar(
+        color: primaryColor,
+        notchMargin: 10,
+        // make rounded corners & create a notch for the floating action button
+        shape: const AutomaticNotchedShape(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(1)),
+          ),
+          StadiumBorder(),
+        ),
+        child: IconTheme(
+          data: const IconThemeData(color: backgroundColor, size: 36),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 25),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                // Menu button
+                IconButton(
+                  onPressed: () {},
+                  icon: const Icon(
+                    Icons.menu_rounded,
+                    size: 30,
+                  ),
+                ),
+                const SizedBox(width: 25),
+
+                // Search Button
+                IconButton(
+                  onPressed: () {},
+                  icon: const Icon(
+                    Icons.search,
+                    size: 30,
+                  ),
+                ),
+
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      // Settings button
+                      IconButton(
+                        onPressed: () {},
+                        icon: const Icon(
+                          Icons.settings,
+                          size: 30,
+                        ),
+                      ),
+                      const SizedBox(width: 25),
+
+                      // Profile button
+                      IconButton(
+                        onPressed: () {},
+                        icon: const Icon(
+                          Icons.person,
+                          size: 30,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ],
-        ));
+          ),
+        ),
+      ),
+    );
   }
 }
