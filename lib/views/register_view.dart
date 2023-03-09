@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:habittrackerapp/components/square_tile.dart';
 import 'package:habittrackerapp/constants/routes.dart';
