@@ -1,30 +1,28 @@
 # Overview
 
-{Important!  Do not say in this section that this is college assignment.  Talk about what you are trying to accomplish as a software engineer to further your learning.}
+The Habit Tracker is a mobile app built using Flutter, designed to work seamlessly on both IOS and Android platforms. This app is designed to help users keep track of their daily goals and habits. By tracking their habits, users can assess their daily performance and efficiency.
 
-{Provide a description of your app.  Describe how to use the app.}
+To use the app, users must first create a new account and verify their email address. Once logged in, users can access the main page where they can create, delete, and edit habits. Editing and deleting can be done by swiping left with their finger to reveal the relevant buttons.
 
-{Describe your purpose for creating this app.}
+The app also has other pages such as Settings and Profile view, but these are currently under construction.
 
-{Provide a link to your YouTube demonstration.  It should be a 4-5 minute demo of the app running and a walkthrough of the code.}
-
-[Software Demo Video](http://youtube.link.goes.here)
+[Software Demo Video](https://youtu.be/u17t0Pqzm4c)
 
 # Development Environment
 
-{Describe the tools that you used to develop the app}
-
-{Describe the programming language that you used and any libraries.}
+Flutter (Dart programming language)
+Google Firebase (For authentification part)
+Hive (For local storage of the app)
 
 # Useful Websites
 
-{Make a list of websites that you found helpful in this project}
-* [Web Site Name](http://url.link.goes.here)
-* [Web Site Name](http://url.link.goes.here)
+* [Flutter Documentation](https://docs.flutter.dev/)
+* [Hive Documentation](https://pub.dev/packages/hive)
+* [Learning Dart](https://dart.dev/tutorials)
+* [Beginner tutorial about Flutter](https://www.youtube.com/watch?v=VPvVD8t02U8)
 
 # Future Work
 
-{Make a list of things that you need to fix, improve, and add in the future.}
-* Item 1
-* Item 2
-* Item 3
+* A new setting page in the app
+* A new profile app to edit your profile created in the app
+* Add more visual graphs to track better your habits
